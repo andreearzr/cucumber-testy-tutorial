@@ -14,13 +14,7 @@ public class LoginTest extends TestBase {
         System.out.println("ready");
         driver.get("https://rawgit.com/sdl/Testy/master/src/test/functional/app-demo/login.html");
 
-        WebElement emailField = driver.findElement(By.id("email"));
-        WebElement passField = driver.findElement(By.name("password"));
-        WebElement loginBtn = driver.findElement(By.className("login-btn"));
-
-        emailField.sendKeys("eu@fast.com");
-        passField.sendKeys("eu.pass111");
-        loginBtn.click();
+        login("eu@fast.com", "eu.pass");
 
         try {
             WebElement logoutBtn = driver.findElement(By.linkText("Logout"));
@@ -28,5 +22,17 @@ public class LoginTest extends TestBase {
         } catch (NoSuchElementException er) {
             Assert.fail("Could not login. Logout button was not present!");
         }
+    }
+
+    public void login(String user, String password) {
+        WebElement emailField = driver.findElement(By.id("email"));
+        WebElement passField = driver.findElement(By.name("password"));
+        WebElement loginBtn = driver.findElement(By.className("login-btn"));
+
+        emailField.sendKeys(user);
+        passField.sendKeys(password);
+        loginBtn.click();
+
+
     }
 }
