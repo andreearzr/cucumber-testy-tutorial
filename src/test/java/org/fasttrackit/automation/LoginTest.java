@@ -1,20 +1,32 @@
 package org.fasttrackit.automation;
 
+import com.sdl.selenium.utils.config.WebDriverConfig;
+import com.sdl.selenium.web.Browser;
+import com.sdl.selenium.web.utils.Utils;
 import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
 public class LoginTest extends TestBase {
+
+    private LoginPage loginPage;
+
+    public LoginTest() {
+        loginPage = PageFactory.initElements(driver, LoginPage.class);
+    }
 
     @Test
     public void validLoginTest() {
-        System.out.println("ready");
-        driver.get("https://rawgit.com/sdl/Testy/master/src/test/functional/app-demo/login.html");
+        openBrowser();
 
-        login("eu@fast.com", "eu.pass");
+        loginPage.login ("eu@fast.com", "eu.pass");
 
         try {
             WebElement logoutBtn = driver.findElement(By.linkText("Logout"));
@@ -24,15 +36,19 @@ public class LoginTest extends TestBase {
         }
     }
 
-    public void login(String user, String password) {
-        WebElement emailField = driver.findElement(By.id("email"));
-        WebElement passField = driver.findElement(By.name("password"));
-        WebElement loginBtn = driver.findElement(By.className("login-btn"));
+    @Test
+    public void invalidPasswordTest() {
+        openBrowser();
 
-        emailField.sendKeys(user);
-        passField.sendKeys(password);
-        loginBtn.click();
+        loginPage.login("eu@fast.com", "eu.pass123");
 
-
+        WebElement errorElement = driver.findElement(By.className("error-msg"));
+        System.out.println(errorElement.getText());
+        //Assert.assertEquals(errorElement.getText(), "Invalid user or password!");
+        assertThat(errorElement.getText(), is("Invalid user or password!"));
     }
+
+
+
+
 }
